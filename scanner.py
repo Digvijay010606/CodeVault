@@ -3,14 +3,12 @@ import pathlib
 def scan_directory(target_directory):
     for item in target_directory.rglob("*.py"):
         if item.is_dir():
-            print(f"Directory: {item}")
+            return "Directory: {item}"
         elif item.is_file():
-            print(f"File: {item}")
-            print("--------------- Reading content----------------------")
+            return "File: {item}"
             try:
                 content = item.read_text(encoding = 'utf-8')
-                print(content)
+                return content
             except Exception as e:
                 print("Cannot read the content of file")
-
 
