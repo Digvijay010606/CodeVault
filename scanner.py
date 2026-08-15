@@ -5,10 +5,10 @@ def scan_directory(target_directory):
         if item.is_dir():
             return "Directory: {item}"
         elif item.is_file():
-            return "File: {item}"
+            
             try:
                 content = item.read_text(encoding = 'utf-8')
-                return content
+                return item,content
             except Exception as e:
                 print("Cannot read the content of file")
 
