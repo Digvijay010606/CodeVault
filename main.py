@@ -1,6 +1,7 @@
 from database import create_table, clear_index, search_code
 from indexer import index_directory
 
+
 def index_command():
 
     directory = input("Enter directory path: ").strip()

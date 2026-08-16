@@ -51,6 +51,6 @@ def scan_directory(target_directory):
             })
 
         except OSError as error:
-            print(f"Could not read {file}: {errro}")
+            print(f"Could not read {file}: {error}")
 
     return files
