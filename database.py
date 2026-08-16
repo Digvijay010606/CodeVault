@@ -84,7 +84,8 @@ def search_code(keyword):
             '''
             SELECT path, content FROM code_index
             WHERE content LIKE ?
-            ''', (f"%{keyword}%")
+            ''', 
+            (f"%{keyword}%",)
         )
 
         return cursor.fetchall()

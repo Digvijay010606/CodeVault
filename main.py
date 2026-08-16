@@ -41,7 +41,7 @@ def search_command():
         for line_number, line in enumerate(lines, start=1):
 
             if keyword.lower() in line.lower():
-                print(f"{line_number}: {line}")
+                print(f"line no. {line_number}: {line}")
 
         print()
 
@@ -58,19 +58,21 @@ def main():
         print("3. Clear indexing")
         print("4. Exit")
 
-        choice = int(input("\nEnter choice: "))
+        choice = input("\nEnter choice: ").strip()
 
-        if choice == 1:
+        if choice == "1":
             index_command()
 
-        elif choice == 2:
+        elif choice == "2":
             search_command()
 
-        elif choice ==3:
+        elif choice == "3":
             clear_index()
+            print("\nIndexing cleared successfully")
 
-        elif choice == 4:
+        elif choice == "4":
             print("Goodbye")
+            break
 
         else:
             print("Invalid choice")
