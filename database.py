@@ -1,57 +1,94 @@
 import sqlite3
-from config import database_path
+
+from config import DATABASE_DIR, create_DATA_DIR
 
 def create_connection():
-    conn = None
-    try:
-        conn = sqlite3.connect(database_path())
-    except sqlite3.Error as e:
-        print(f"Error connecting to database: {e}")
-    return conn
+
+    create_DATA_DIR()
+
+    return sqlite3.connect(DATABASE_DIR)
+
 
 def create_table():
-    conn = create_connection()
-    if conn is not None:
-        try:
-            cursor = conn.cursor()
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS index (
-                    path TEXT PRIMARY KEY,
-                    tokenized content TEXT,
-                    line_no INTEGER
-                    )
-                    ''')
-            conn.commit()
-        except sqlite3.Error as e:
-            print(f"Error creating table: {e}")
 
-def insert_data(path, tokenized_content, line_no):
-    create_table()
-    conn = create_connection()
-    if conn is not None:
-        try:
-            cursor = conn.cursor()
-            cursor.execute('''
-                INSERT INTO index (path, tokenized content, line_no)
-                VALUES (?, ?, ?)
-            ''', (path, tokenized_content, line_no))
-            conn.commit()
-        except sqlite3.Error as e:
-            print(f"Error inserting data: {e}")
+    connection = create_connection()
 
-def fetch_data(target_word):
-    conn = create_connection()
-    if conn is not None:
-        try:
-            cursor = conn.cursor()
-            cursor.execute('''
-                SELECT path, tokenized content, line_no
-                FROM index
-                WHERE tokenized content LIKE ?
-            ''', (f'%{target_word}%',))
-            return cursor.fetchall()
-        except sqlite3.Error as e:
-            print(f"Error fetching data: {e}")
-    return []
+    try:
+
+        cursor = connection.cursor()
+
+        cursor.execute(
+            '''CREATE TABLE IF NOT EXISTS code_index(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            path TEXT NOT NULL,
+            content TEXT NOT NULL
+            )
+            '''
+        )
+
+        connection.commit()
+
+    finally:
+
+        connection.close()
 
 
+def clear_index():
+
+    connection = create_connection()
+
+    try:
+        cursor = connection.cursor()
+
+        cursor.execute(
+            '''DELETE FROM code_index'''
+        )
+
+        connection.commit()
+
+    finally:
+
+        connection.close()
+
+
+def insert_file(path, content):
+
+    connection = create_connection()
+
+    try:
+
+        cursor = connection.cursor()
+
+        cursor.execute(
+            '''
+            INSERT INTO code_index(path, content)
+            VALUES ( ? , ?)
+            ''', (str(path), content)
+        )
+
+        connection.commit()
+
+    finally:
+
+        connection.close()
+
+def search_code(keyword):
+
+    connection = create_connection()
+
+    try:
+
+        cursor = connection.cursor()
+
+        cursor.execute(
+            '''
+            SELECT path, content FROM code_index
+            WHERE content LIKE ?
+            ''', (f"%{keyword}%")
+        )
+
+        return cursor.fetchall()
+
+    finally:
+
+        connection.close()
