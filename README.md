@@ -39,6 +39,33 @@ Instead of manually opening multiple files to find a particular function, keywor
 
 ---
 
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/Digvijay010606/CodeVault.git
+```
+
+### 2. Enter the Project Directory
+
+```bash
+cd CodeVault
+```
+
+### 5. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 6. Run CodeVault
+
+```bash
+python main.py
+```
+
+
+---
+
 # 🛠️ Tech Stack
 
 - **Python**
