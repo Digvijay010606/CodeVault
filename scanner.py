@@ -1,4 +1,5 @@
 from pathlib import Path
+from rich import print
 
 SUPPORTED_EXTENSIONS = {
     ".py",
@@ -18,12 +19,12 @@ def scan_directory(target_directory):
 
     if not target_directory.exists():
         raise FileNotFoundError(
-            print(f"Directory does not exists: {target_directory}")
+            print(f"[red]Directory does not exists:[/red] [yellow]{target_directory}[/yellow]")
         )
 
     if not target_directory.is_dir():
         raise NotADirectoryError(
-            print(f"Not a Directory: {target_directory}")
+            print(f"[red]Not a Directory:[/red] [yellow]{target_directory}[/yellow]")
         )
 
     files = []
@@ -51,6 +52,6 @@ def scan_directory(target_directory):
             })
 
         except OSError as error:
-            print(f"Could not read {file}: {error}")
+            print(f"[red]Could not read[/red] [yellow]{file}:[/yellow] [red]{error}[/red]")
 
     return files
