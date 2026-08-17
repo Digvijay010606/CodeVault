@@ -1,21 +1,24 @@
+from database import insert_file, clear_index
 from scanner import scan_directory
-from database import insert_file
 
 
 def index_directory(target_directory):
     """
-    Scan a directory and store all source files in the database.
+    Scan a directory and create a fresh index.
     """
 
+    # Remove previous indexed data
+    clear_index()
+
+    # Scan the directory
     files = scan_directory(target_directory)
 
     indexed_count = 0
 
     for file in files:
-
         insert_file(
             file["path"],
-            file["content"]
+            file["content"],
         )
 
         indexed_count += 1

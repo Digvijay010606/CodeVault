@@ -1,57 +1,84 @@
-from pathlib import Path
-from rich import print
+import pathlib
 
+
+# File extensions CodeVault can index
 SUPPORTED_EXTENSIONS = {
     ".py",
+    ".js",
+    ".ts",
+    ".jsx",
+    ".tsx",
+    ".java",
     ".c",
     ".cpp",
-    ".js",
-    ".java",
+    ".h",
+    ".hpp",
+    ".cs",
+    ".php",
     ".html",
     ".css",
-    ".h",
-    ".hpp"
+    ".sql",
+    ".json",
+    ".xml",
+    ".yaml",
+    ".yml",
+    ".md",
+    ".txt",
 }
 
-def scan_directory(target_directory):
 
-    target_directory = Path(target_directory)
+# Directories that should not be scanned
+IGNORED_DIRECTORIES = {
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    "env",
+    "node_modules",
+    ".idea",
+    ".vscode",
+}
+
+
+def scan_directory(target_directory):
+    """
+    Recursively scan a directory and return source files.
+    """
+
+    target_directory = pathlib.Path(target_directory)
 
     if not target_directory.exists():
         raise FileNotFoundError(
-            print(f"[red]Directory does not exists:[/red] [yellow]{target_directory}[/yellow]")
+            f"Directory does not exist: {target_directory}"
         )
 
     if not target_directory.is_dir():
         raise NotADirectoryError(
-            print(f"[red]Not a Directory:[/red] [yellow]{target_directory}[/yellow]")
+            f"Not a directory: {target_directory}"
         )
 
     files = []
 
-    for file in target_directory.rglob("*"):
+    for item in target_directory.rglob("*"):
 
-        if not file.is_file():
-            continue
-        
-        if file.suffix.lower() not in SUPPORTED_EXTENSIONS:
+        # Skip ignored directories
+        if any(part in IGNORED_DIRECTORIES for part in item.parts):
             continue
 
-        if any(part in {"__pycache__", ".git", "venv", ".venv"} for part in file.parts):
-            continue
+        if item.is_file() and item.suffix.lower() in SUPPORTED_EXTENSIONS:
 
-        try:
-            content = file.read_text(
-                encoding = 'utf-8',
-                errors = 'ignore'
-            )
+            try:
+                content = item.read_text(encoding="utf-8")
 
-            files.append({
-                "path" : file,
-                "content" : content
-            })
+                files.append(
+                    {
+                        "path": str(item),
+                        "content": content,
+                    }
+                )
 
-        except OSError as error:
-            print(f"[red]Could not read[/red] [yellow]{file}:[/yellow] [red]{error}[/red]")
+            except (UnicodeDecodeError, PermissionError, OSError):
+                # Skip files that cannot be read
+                continue
 
     return files
